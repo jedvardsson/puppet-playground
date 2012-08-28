@@ -1,29 +1,22 @@
 class my_apache {
   case $operatingsystem {
-    centos: { $apache = "httpd" }
     ubuntu: { $apache = "apache2" }
     default: { fail("Unrecognized operating system for webserver") }
   }
 
-  package { 'apache2': 
+  package { $apache: 
     ensure => latest,
   }
 
-  service { 'apache2':
+  service { $apache:
     ensure  => running,
     require => Package[$apache],
   }
-#  file {'httpd.conf':
-#    path    => '/etc/httpd/conf/httpd.conf',
-#    ensure  => file,
-#    require => Package[$apache],
-#    source  => 'puppet:///modules/apache/httpd.conf',
-#  }
   file {'index.html':
     path    => '/var/www/index.html',
     ensure  => file,
     require => Package[$apache],
-    source  => 'puppet:///modules/apache/index.html'
+    source  => 'puppet:///modules/my_apache/index.html'
   }
 }
 
